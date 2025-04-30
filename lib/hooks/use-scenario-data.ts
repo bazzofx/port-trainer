@@ -20,6 +20,14 @@ export function useScenarioData() {
     const randomIndex = Math.floor(Math.random() * availableScenarios.length)
     const selectedScenario = availableScenarios[randomIndex]
 
+    // Log the selected scenario for debugging
+    console.log("Generated new security scenario:", {
+      scenario: selectedScenario.scenario,
+      question: selectedScenario.question,
+      choices: selectedScenario.choices,
+      answer: selectedScenario.answer,
+    })
+
     // Add to used scenarios
     setUsedScenarios(new Set([...usedScenarios, selectedScenario.scenario]))
     setCurrentScenario(selectedScenario)
