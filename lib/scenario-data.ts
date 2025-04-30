@@ -1,5 +1,3 @@
-import type { Scenario } from "@/lib/types"
-
 export const scenarioData: Scenario[] = [
   {
     scenario:
@@ -250,3 +248,11 @@ export const scenarioData: Scenario[] = [
       "Port 1813 is used by RADIUS (Remote Authentication Dial-In User Service) for accounting traffic, which logs user activity. Blocking this port can interfere with tracking and auditing of network access.",
   },
 ]
+
+export type Scenario = {
+  scenario: string
+  question: string
+  choices: string[]
+  answer: string
+  explanation?: string
+}
