@@ -42,10 +42,20 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
       timeoutRef.current = null
     }
 
+    // Check if the selected answer is correct
+    // We need to ensure we're comparing the actual answer text, not any additional information
+    const isCorrect = selectedAnswer === scenario.correctAnswer
+
     // Move to next question
-    onAnswer(selectedAnswer === scenario.correctAnswer)
+    onAnswer(isCorrect)
     setSelectedAnswer(null)
     setShowAnswer(false)
+  }
+
+  // Debug function to help identify comparison issues
+  const isCorrectAnswer = () => {
+    if (!selectedAnswer) return false
+    return selectedAnswer === scenario.correctAnswer
   }
 
   return (
@@ -96,7 +106,7 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
         >
           <div className="flex flex-col items-center justify-center h-full">
             <div className="mb-4">
-              {selectedAnswer === scenario.correctAnswer ? (
+              {isCorrectAnswer() ? (
                 <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mb-2">
                   <Check className="w-8 h-8" />
                 </div>
@@ -108,7 +118,7 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
             </div>
 
             <h3 className="text-xl font-bold text-blue-800 dark:text-purple-200 mb-2">
-              {selectedAnswer === scenario.correctAnswer ? "Correct!" : "Incorrect"}
+              {isCorrectAnswer() ? "Correct!" : "Incorrect"}
             </h3>
 
             <div className="text-center mb-4">
@@ -116,7 +126,6 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
                 The correct answer is: {scenario.correctAnswer}
               </p>
             </div>
-
 
             <div className="text-sm text-blue-800 dark:text-purple-200 bg-blue-50 dark:bg-purple-900/20 p-3 rounded-lg mb-4 w-full">
               <p className="font-medium mb-2">Scenario:</p>
