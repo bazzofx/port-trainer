@@ -20,6 +20,14 @@ export function useThreatHuntingData() {
     const randomIndex = Math.floor(Math.random() * availableScenarios.length)
     const selectedScenario = availableScenarios[randomIndex]
 
+    // Log the selected scenario for debugging
+    console.log("Generated new threat hunting scenario:", {
+      description: selectedScenario.description,
+      question: selectedScenario.question,
+      options: selectedScenario.options,
+      correctAnswer: selectedScenario.correctAnswer,
+    })
+
     // Add to used scenarios
     setUsedScenarios(new Set([...usedScenarios, selectedScenario.description]))
     setCurrentScenario(selectedScenario)
