@@ -360,7 +360,7 @@ export const portData: PortData[] = [
     protocol: "TCP",
     service: "Oracle Database",
     description: "Oracle Database is a multi-model database management system, and port 1521 is the default port for connecting to Oracle's database services using Oracle Net Listener."
-  }
+  },
   {
     port: "8443",
     protocol: "TCP",
