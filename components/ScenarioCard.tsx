@@ -6,7 +6,7 @@ import { Check, X, ArrowRight, ShieldAlert } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import type { Scenario } from "@/lib/scenario-data"
+import type { Scenario } from "@/lib/types"
 
 interface ScenarioCardProps {
   scenario: Scenario
@@ -42,10 +42,19 @@ export default function ScenarioCard({ scenario, onAnswer, isChallenge = false }
       timeoutRef.current = null
     }
 
+    // Check if the selected answer is correct
+    const isCorrect = selectedAnswer === scenario.answer
+
     // Move to next question
-    onAnswer(selectedAnswer === scenario.answer)
+    onAnswer(isCorrect)
     setSelectedAnswer(null)
     setShowAnswer(false)
+  }
+
+  // Helper function to determine if the answer is correct
+  const isCorrectAnswer = () => {
+    if (!selectedAnswer) return false
+    return selectedAnswer === scenario.answer
   }
 
   return (
@@ -96,7 +105,7 @@ export default function ScenarioCard({ scenario, onAnswer, isChallenge = false }
         >
           <div className="flex flex-col items-center justify-center h-full">
             <div className="mb-4">
-              {selectedAnswer === scenario.answer ? (
+              {isCorrectAnswer() ? (
                 <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mb-2">
                   <Check className="w-8 h-8" />
                 </div>
@@ -108,7 +117,7 @@ export default function ScenarioCard({ scenario, onAnswer, isChallenge = false }
             </div>
 
             <h3 className="text-xl font-bold text-blue-800 dark:text-purple-200 mb-2">
-              {selectedAnswer === scenario.answer ? "Correct!" : "Incorrect"}
+              {isCorrectAnswer() ? "Correct!" : "Incorrect"}
             </h3>
 
             <div className="text-center mb-4">
