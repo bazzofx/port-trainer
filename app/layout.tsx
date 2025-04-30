@@ -8,9 +8,9 @@ import type { Metadata } from "next"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "PortTrainer - Master Network Ports",
+  title: "Port Hunter - Master Network Ports",
   description: "Learn network ports, protocols, and services through interactive flashcards",
-    generator: 'v0.dev'
+    generator: 'Cyber Samrurai'
 }
 
 export default function RootLayout({

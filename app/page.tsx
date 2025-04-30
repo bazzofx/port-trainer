@@ -168,7 +168,7 @@ export default function Home() {
             className="flex items-center justify-center gap-2 mb-2"
           >
             <Sparkles className="h-8 w-8 text-blue-600 dark:text-purple-400" />
-            <h1 className="text-4xl font-bold text-blue-700 dark:text-purple-300">PortTrainer</h1>
+            <h1 className="text-4xl font-bold text-blue-700 dark:text-purple-300">Port Hunter</h1>
             <Sparkles className="h-8 w-8 text-blue-600 dark:text-purple-400" />
           </motion.div>
           <p className="text-blue-600 dark:text-purple-200">Master network ports, protocols, and services</p>
