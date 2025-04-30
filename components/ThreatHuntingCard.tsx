@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Check, X, ArrowRight, Shield } from "lucide-react"
+import { Check, X, ArrowRight, Shield, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
@@ -19,6 +19,16 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
   const [showAnswer, setShowAnswer] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // For debugging - log the scenario data when it changes
+  useEffect(() => {
+    console.log("Threat Hunting Scenario:", {
+      description: scenario.description,
+      question: scenario.question,
+      options: scenario.options,
+      correctAnswer: scenario.correctAnswer,
+    })
+  }, [scenario])
+
   // Clear timeout on unmount
   useEffect(() => {
     return () => {
@@ -30,6 +40,11 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
 
   const handleSelectAnswer = (answer: string) => {
     if (showAnswer) return
+
+    // Log the selected answer for debugging
+    console.log("Selected answer:", answer)
+    console.log("Correct answer:", scenario.correctAnswer)
+    console.log("Is correct?", answer === scenario.correctAnswer)
 
     setSelectedAnswer(answer)
     setShowAnswer(true)
@@ -43,8 +58,14 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
     }
 
     // Check if the selected answer is correct
-    // We need to ensure we're comparing the actual answer text, not any additional information
-    const isCorrect = selectedAnswer === scenario.correctAnswer
+    const isCorrect = isCorrectAnswer()
+
+    // Log the result for debugging
+    console.log("Final result:", {
+      selectedAnswer,
+      correctAnswer: scenario.correctAnswer,
+      isCorrect,
+    })
 
     // Move to next question
     onAnswer(isCorrect)
@@ -52,9 +73,11 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
     setShowAnswer(false)
   }
 
-  // Debug function to help identify comparison issues
+  // Helper function to determine if the answer is correct
   const isCorrectAnswer = () => {
     if (!selectedAnswer) return false
+
+    // Direct comparison of the exact strings
     return selectedAnswer === scenario.correctAnswer
   }
 
@@ -125,11 +148,12 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
               <p className="font-medium text-blue-700 dark:text-purple-300">
                 The correct answer is: {scenario.correctAnswer}
               </p>
-            </div>
-
-            <div className="text-sm text-blue-800 dark:text-purple-200 bg-blue-50 dark:bg-purple-900/20 p-3 rounded-lg mb-4 w-full">
-              <p className="font-medium mb-2">Scenario:</p>
-              <p>{scenario.description}</p>
+              {selectedAnswer && !isCorrectAnswer() && (
+                <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                  <AlertCircle className="inline-block w-4 h-4 mr-1" />
+                  You selected: {selectedAnswer}
+                </p>
+              )}
             </div>
 
             {scenario.explanation && (
@@ -138,6 +162,11 @@ export default function ThreatHuntingCard({ scenario, onAnswer, isChallenge = fa
                 <p>{scenario.explanation}</p>
               </div>
             )}
+
+            <div className="text-sm text-blue-800 dark:text-purple-200 bg-blue-50 dark:bg-purple-900/20 p-3 rounded-lg mb-4 w-full">
+              <p className="font-medium mb-2">Scenario:</p>
+              <p>{scenario.description}</p>
+            </div>
 
             <Button
               onClick={handleNextQuestion}
