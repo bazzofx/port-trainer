@@ -57,6 +57,8 @@ export default function Home() {
     const scenarioType: ScenarioType = Math.random() > 0.5 ? "security" : "threat"
     setCurrentScenarioType(scenarioType)
 
+    console.log("Challenge mode generating new scenario of type:", scenarioType)
+
     // Generate the appropriate scenario type
     if (scenarioType === "security") {
       generateNewScenario()
@@ -66,6 +68,8 @@ export default function Home() {
   }
 
   const handleAnswer = (isCorrect: boolean) => {
+    console.log("Answer received:", isCorrect ? "Correct" : "Incorrect")
+
     if (isCorrect) {
       setScore(score + 10 + streak * 2)
       setStreak(streak + 1)
@@ -88,6 +92,7 @@ export default function Home() {
   const startGame = (
     mode: "time" | "endless" | "personalized" | "scenarios" | "scenario-challenge" | "threat-hunting",
   ) => {
+    console.log("Starting game mode:", mode)
     setGameMode(mode)
 
     if (mode === "personalized") {
@@ -168,7 +173,7 @@ export default function Home() {
             className="flex items-center justify-center gap-2 mb-2"
           >
             <Sparkles className="h-8 w-8 text-blue-600 dark:text-purple-400" />
-            <h1 className="text-4xl font-bold text-blue-700 dark:text-purple-300">Port Hunter</h1>
+            <h1 className="text-4xl font-bold text-blue-700 dark:text-purple-300">PortTrainer</h1>
             <Sparkles className="h-8 w-8 text-blue-600 dark:text-purple-400" />
           </motion.div>
           <p className="text-blue-600 dark:text-purple-200">Master network ports, protocols, and services</p>
@@ -250,7 +255,7 @@ export default function Home() {
                     transition={{ duration: 0.3 }}
                   >
                     {currentThreatScenario && (
-                      <ThreatHuntingCard scenario={currentThreatScenario} onAnswer={handleAnswer} />
+                      <ThreatHuntingCard scenario={currentThreatScenario} onAnswer={handleAnswer} isChallenge={false} />
                     )}
                   </motion.div>
                 ) : (
