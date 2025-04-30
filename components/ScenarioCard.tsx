@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Check, X, ArrowRight, ShieldAlert } from "lucide-react"
+import { Check, X, ArrowRight, ShieldAlert, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
@@ -19,6 +19,16 @@ export default function ScenarioCard({ scenario, onAnswer, isChallenge = false }
   const [showAnswer, setShowAnswer] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // For debugging - log the scenario data when it changes
+  useEffect(() => {
+    console.log("Security Scenario:", {
+      scenario: scenario.scenario,
+      question: scenario.question,
+      choices: scenario.choices,
+      answer: scenario.answer,
+    })
+  }, [scenario])
+
   // Clear timeout on unmount
   useEffect(() => {
     return () => {
@@ -30,6 +40,11 @@ export default function ScenarioCard({ scenario, onAnswer, isChallenge = false }
 
   const handleSelectAnswer = (answer: string) => {
     if (showAnswer) return
+
+    // Log the selected answer for debugging
+    console.log("Selected answer:", answer)
+    console.log("Correct answer:", scenario.answer)
+    console.log("Is correct?", answer === scenario.answer)
 
     setSelectedAnswer(answer)
     setShowAnswer(true)
@@ -43,7 +58,14 @@ export default function ScenarioCard({ scenario, onAnswer, isChallenge = false }
     }
 
     // Check if the selected answer is correct
-    const isCorrect = selectedAnswer === scenario.answer
+    const isCorrect = isCorrectAnswer()
+
+    // Log the result for debugging
+    console.log("Final result:", {
+      selectedAnswer,
+      correctAnswer: scenario.answer,
+      isCorrect,
+    })
 
     // Move to next question
     onAnswer(isCorrect)
@@ -54,6 +76,8 @@ export default function ScenarioCard({ scenario, onAnswer, isChallenge = false }
   // Helper function to determine if the answer is correct
   const isCorrectAnswer = () => {
     if (!selectedAnswer) return false
+
+    // Direct comparison of the exact strings
     return selectedAnswer === scenario.answer
   }
 
@@ -122,11 +146,12 @@ export default function ScenarioCard({ scenario, onAnswer, isChallenge = false }
 
             <div className="text-center mb-4">
               <p className="font-medium text-blue-700 dark:text-purple-300">The correct answer is: {scenario.answer}</p>
-            </div>
-
-            <div className="text-sm text-blue-800 dark:text-purple-200 bg-blue-50 dark:bg-purple-900/20 p-3 rounded-lg mb-4 w-full">
-              <p className="font-medium mb-2">Scenario:</p>
-              <p>{scenario.scenario}</p>
+              {selectedAnswer && !isCorrectAnswer() && (
+                <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                  <AlertCircle className="inline-block w-4 h-4 mr-1" />
+                  You selected: {selectedAnswer}
+                </p>
+              )}
             </div>
 
             {scenario.explanation && (
@@ -135,6 +160,11 @@ export default function ScenarioCard({ scenario, onAnswer, isChallenge = false }
                 <p>{scenario.explanation}</p>
               </div>
             )}
+
+            <div className="text-sm text-blue-800 dark:text-purple-200 bg-blue-50 dark:bg-purple-900/20 p-3 rounded-lg mb-4 w-full">
+              <p className="font-medium mb-2">Scenario:</p>
+              <p>{scenario.scenario}</p>
+            </div>
 
             <Button
               onClick={handleNextQuestion}
